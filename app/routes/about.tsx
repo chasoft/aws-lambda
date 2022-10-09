@@ -1,19 +1,94 @@
+// import * as React from "react"
 import { Link } from "@remix-run/react"
-import * as React from "react"
+import { createStyles, Header, Container, Group, Burger } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { MantineLogo } from '@mantine/ds';
+import { useState } from "react";
 
-export default function AboutRoute(){
+const useStyles = createStyles((theme) => ({
+	header: {
+		display: 'flex',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		height: '100%',
+	},
+
+	links: {
+		[theme.fn.smallerThan('xs')]: {
+			display: 'none',
+		},
+	},
+
+	burger: {
+		[theme.fn.largerThan('xs')]: {
+			display: 'none',
+		},
+	},
+
+	link: {
+		display: 'block',
+		lineHeight: 1,
+		padding: '8px 12px',
+		borderRadius: theme.radius.sm,
+		textDecoration: 'none',
+		color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
+		fontSize: theme.fontSizes.sm,
+		fontWeight: 500,
+
+		'&:hover': {
+			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+		},
+	},
+
+	linkActive: {
+		'&, &:hover': {
+			backgroundColor: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).background,
+			color: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).color,
+		},
+	},
+}));
+
+type HeaderSimpleProps = { link: string; label: string }[]
+
+const links: HeaderSimpleProps = [
+	{
+		link: "/", label: "Home"
+	}
+]
+
+export default function AboutRoute() {
+	const [opened, { toggle }] = useDisclosure(false);
+	const [active, setActive] = useState(links[0].link);
+	const { classes, cx } = useStyles();
+
+	const items = links.map((link) => (
+		<a
+			key={link.label}
+			href={link.link}
+			className={cx(classes.link, { [classes.linkActive]: active === link.link })}
+			onClick={(event) => {
+				event.preventDefault();
+				setActive(link.link);
+			}}
+		>
+			{link.label}
+		</a>
+	));
+
 	return (
-		<div>
-			<h1>About Us</h1>
-			<p>
-				Aute reprehenderit irure ea culpa ullamco dolore qui pariatur commodo fugiat do aliquip mollit ex exercitation. Irure ipsum exercitation officia eu amet elit ut nisi sunt. Commodo irure deserunt reprehenderit do nisi veniam dolor reprehenderit laborum Lorem cillum. Dolor eu aliqua ipsum qui.
-			</p>
-			<p>
-				Irure proident veniam exercitation reprehenderit cillum Lorem culpa incididunt. Officia ex proident laborum ut anim aliqua esse irure duis labore. Irure commodo aute occaecat veniam sint et minim culpa fugiat veniam enim do. Veniam officia consectetur duis eu do enim consequat voluptate commodo aliqua. Exercitation in incididunt Lorem in ullamco nulla anim nostrud ea. Laboris ea anim ex deserunt incididunt consequat ad nostrud laborum sint incididunt aliquip aute eu. Aute officia qui officia magna proident ullamco irure et. Amet ut ut aute fugiat laborum irure irure in cupidatat in.
-			</p>
-			<Link to="/">
-				Go Home
-			</Link>
-		</div>
+		<Header height={60} mb={120}>
+			<Container className={classes.header}>
+				<MantineLogo size={28} />
+				<Group spacing={5} className={classes.links}>
+					{items}
+				</Group>
+
+				<Link to="/">
+					Go Home
+				</Link>
+
+				<Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
+			</Container>
+		</Header>
 	)
 }

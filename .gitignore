@@ -7,3 +7,5 @@ preferences.arc
 sam.json
 sam.yaml
 .env
+/server
+server
