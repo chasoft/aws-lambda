@@ -8,7 +8,7 @@ remix-architect-app
 
 @static
 
-# @aws
-# profile default
-# region us-west-1
+@aws
+profile default
+region us-west-1
   
